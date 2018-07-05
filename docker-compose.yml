@@ -1,0 +1,41 @@
+version: '3.6'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: ["sleep", "infinity"]
+    networks:
+      - app-network
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./src:/opt/service/src"
+      - "./gradle:/opt/service/gradle"
+      - "./gradlew:/opt/service/gradlew"
+      - "./build.gradle:/opt/service/build.gradle"
+      - "./settings.gradle:/opt/service/settings.gradle"
+    environment:
+      - DB_ACCESS_URL=http+tcp://db:5432
+      - DB_NAME=springdb
+      - DB_USERNAME=springuser
+      - DB_PASSWORD=springpass
+    depends_on:
+      - db
+
+  db:
+    image: postgres:10.4
+    volumes:
+      - "psqldb:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_DB=springdb
+      - POSTGRES_USER=springuser
+      - POSTGRES_PASSWORD=springpass
+    ports:
+      - "5432:5432"
+
+networks:
+  app-network:
+
+volumes:
+  psqldb:
