@@ -5,4 +5,7 @@ RUN apt-get update && \
 
 WORKDIR /opt/service
 
+COPY ./gradle /opt/service/gradle
+COPY ./gradlew /opt/service/gradlew
+
 RUN ./gradlew init

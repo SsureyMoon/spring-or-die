@@ -16,7 +16,7 @@ services:
       - "./build.gradle:/opt/service/build.gradle"
       - "./settings.gradle:/opt/service/settings.gradle"
     environment:
-      - DB_ACCESS_URL=http+tcp://db:5432
+      - DB_ACCESS_URL=jdbc:postgresql://db/springdb
       - DB_NAME=springdb
       - DB_USERNAME=springuser
       - DB_PASSWORD=springpass
@@ -31,6 +31,8 @@ services:
       - POSTGRES_DB=springdb
       - POSTGRES_USER=springuser
       - POSTGRES_PASSWORD=springpass
+    networks:
+      - app-network
     ports:
       - "5432:5432"
 
