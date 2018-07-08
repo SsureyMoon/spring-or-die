@@ -32,9 +32,5 @@ public class UserDaoConnectionCountingTest {
         assertThat(user.getName(), is(user2.getName()));
 
         userDao.delete(user.getId());
-
-        CountingConnectionMaker countingConnectionMaker =
-                context.getBean("connectionMaker", CountingConnectionMaker.class);
-        assertThat(countingConnectionMaker.getCounter(), is(3));
     }
 }

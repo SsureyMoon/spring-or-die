@@ -2,20 +2,21 @@ package com.capricornoow.spring.daos;
 
 import com.capricornoow.spring.domain.User;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDao {
-    private ConnectionMaker connectionMaker;
+    private DataSource dataSource;
 
-    public void setConnectionMaker(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection connection = connectionMaker.makeConnection();
+    public void add(User user) throws SQLException {
+        Connection connection = dataSource.getConnection();
 
         PreparedStatement ps = connection.prepareStatement(
                 "insert into users(id, name, password) values(?,?,?)");
@@ -28,8 +29,8 @@ public class UserDao {
         connection.close();
     }
 
-    public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection connection = connectionMaker.makeConnection();
+    public User get(String id) throws SQLException {
+        Connection connection = dataSource.getConnection();
         PreparedStatement ps = connection.prepareStatement(
                 "select * from users where id = ?");
         ps.setString(1, id);
@@ -48,8 +49,8 @@ public class UserDao {
         return user;
     }
 
-    public void delete(String id) throws ClassNotFoundException, SQLException {
-        Connection connection = connectionMaker.makeConnection();
+    public void delete(String id) throws SQLException {
+        Connection connection = dataSource.getConnection();
         PreparedStatement ps = connection.prepareStatement(
                 "delete from users where id = ?");
         ps.setString(1, id);
