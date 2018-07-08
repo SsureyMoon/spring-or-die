@@ -14,8 +14,7 @@ import java.sql.SQLException;
 public class UserDaoTest {
     @Test
     public void addAndGet() throws SQLException, ClassNotFoundException {
-        ConnectionMaker connectionMaker = new DConnectionMaker();
-        UserDao userDao = new UserDao(connectionMaker);
+        UserDao userDao = new DaoFactory().userDao();
 
         User user = new User();
         user.setId("whiteship1");
