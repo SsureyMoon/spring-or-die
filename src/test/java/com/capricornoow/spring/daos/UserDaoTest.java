@@ -2,6 +2,8 @@ package com.capricornoow.spring.daos;
 
 import com.capricornoow.spring.domain.User;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -14,7 +16,8 @@ import java.sql.SQLException;
 public class UserDaoTest {
     @Test
     public void addAndGet() throws SQLException, ClassNotFoundException {
-        UserDao userDao = new DaoFactory().userDao();
+        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        UserDao userDao = context.getBean("userDao", UserDao.class);
 
         User user = new User();
         user.setId("whiteship1");
