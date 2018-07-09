@@ -15,20 +15,25 @@ import java.sql.SQLException;
 
 public class UserDaoTest {
     private UserDao userDao;
+    private User user1;
+    private User user2;
+    private User user3;
+
 
     @Before
     public void setUp() {
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
         userDao = context.getBean("userDao", UserDao.class);
+
+        user1 = new User("id1", "일이삼", "pass1");
+        user2 = new User("id2", "사오육", "pass2");
+        user3 = new User("id3", "칠팔구", "pass3");
     }
 
     @Test
     public void addAndGet() throws SQLException {
         userDao.deleteAll();
         assertThat(userDao.getCount(), is(0));
-
-        User user1 = new User("whiteship1", "나유저", "passpass1");
-        User user2 = new User("whiteship2", "너도유저", "passpass2");
 
         userDao.add(user1);
         userDao.add(user2);
@@ -56,10 +61,6 @@ public class UserDaoTest {
 
     @Test
     public void count() throws SQLException {
-        User user1 = new User("id1", "일이삼", "pass1");
-        User user2 = new User("id2", "사오육", "pass2");
-        User user3 = new User("id3", "칠팔구", "pass3");
-
         userDao.deleteAll();
         assertThat(userDao.getCount(), is(0));
 
