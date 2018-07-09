@@ -1,6 +1,8 @@
 package com.capricornoow.spring.daos;
 
 import com.capricornoow.spring.domain.User;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -12,11 +14,16 @@ import static org.junit.Assert.assertThat;
 import java.sql.SQLException;
 
 public class UserDaoTest {
-    @Test
-    public void addAndGet() throws SQLException, ClassNotFoundException {
-        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-        UserDao userDao = context.getBean("userDao", UserDao.class);
+    private UserDao userDao;
 
+    @Before
+    public void setUp() {
+        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+        userDao = context.getBean("userDao", UserDao.class);
+    }
+
+    @Test
+    public void addAndGet() throws SQLException {
         userDao.deleteAll();
         assertThat(userDao.getCount(), is(0));
 
@@ -41,9 +48,6 @@ public class UserDaoTest {
 
     @Test(expected=EmptyResultDataAccessException.class)
     public void getUserFailure() throws SQLException {
-        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-        UserDao userDao = context.getBean("userDao", UserDao.class);
-
         userDao.deleteAll();
         assertThat(userDao.getCount(), is(0));
 
@@ -52,9 +56,6 @@ public class UserDaoTest {
 
     @Test
     public void count() throws SQLException {
-        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-
-        UserDao userDao = context.getBean("userDao", UserDao.class);
         User user1 = new User("id1", "일이삼", "pass1");
         User user2 = new User("id2", "사오육", "pass2");
         User user3 = new User("id3", "칠팔구", "pass3");
@@ -79,5 +80,10 @@ public class UserDaoTest {
 
         userDao.delete(user1.getId());
         assertThat(userDao.getCount(), is(0));
+    }
+
+    @After
+    public void tearDown() throws SQLException {
+        userDao.deleteAll();
     }
 }
