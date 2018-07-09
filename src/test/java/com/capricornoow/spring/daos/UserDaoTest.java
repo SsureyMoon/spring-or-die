@@ -23,13 +23,9 @@ public class UserDaoTest {
 
         userDao.add(user);
 
-        System.out.println(user.getId() + " 등록 성공");
-        assertThat(user.getName(), is("나유저"));
-
-
         User user2 = userDao.get(user.getId());
-        System.out.println(user2.getName() + " 조회 성공");
-        assertThat(user.getName(), is(user2.getName()));
+        assertThat(user2.getName(), is(user.getName()));
+        assertThat(user2.getPassword(), is(user.getPassword()));
 
         userDao.delete(user.getId());
     }
