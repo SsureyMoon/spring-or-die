@@ -7,22 +7,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.sql.DataSource;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.sql.SQLException;
-import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/applicationContext.xml")
-@DirtiesContext
+@ContextConfiguration(locations="/test-applicationContext.xml")
 public class UserDaoTest {
     @Autowired
     UserDao userDao;
@@ -34,13 +28,6 @@ public class UserDaoTest {
 
     @Before
     public void setUp() {
-        Map<String, String> env = System.getenv();
-        String dbUrl = env.get("DB_ACCESS_URL");
-        String dbUserName = env.get("DB_USERNAME");
-        String dbUserPassword = env.get("DB_PASSWORD");
-
-        DataSource dataSource = new SingleConnectionDataSource(dbUrl, dbUserName, dbUserPassword, true);
-        userDao.setDataSource(dataSource);
         user1 = new User("id1", "일이삼", "pass1");
         user2 = new User("id2", "사오육", "pass2");
         user3 = new User("id3", "칠팔구", "pass3");

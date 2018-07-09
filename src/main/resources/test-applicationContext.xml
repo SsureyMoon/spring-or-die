@@ -5,7 +5,7 @@
                     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="org.postgresql.Driver" />
-        <property name="url" value="#{systemEnvironment['DB_ACCESS_URL']}/#{systemEnvironment['DB_NAME']}" />
+        <property name="url" value="#{systemEnvironment['DB_ACCESS_URL']}/#{systemEnvironment['DB_NAME']}_test" />
         <property name="username" value="#{systemEnvironment['DB_USERNAME']}" />
         <property name="password" value="#{systemEnvironment['DB_PASSWORD']}" />
     </bean>

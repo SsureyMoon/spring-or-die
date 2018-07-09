@@ -16,7 +16,7 @@ services:
       - "./build.gradle:/opt/service/build.gradle"
       - "./settings.gradle:/opt/service/settings.gradle"
     environment:
-      - DB_ACCESS_URL=jdbc:postgresql://db/springdb
+      - DB_ACCESS_URL=jdbc:postgresql://db
       - DB_NAME=springdb
       - DB_USERNAME=springuser
       - DB_PASSWORD=springpass

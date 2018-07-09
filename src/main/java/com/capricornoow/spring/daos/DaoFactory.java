@@ -20,12 +20,13 @@ public class DaoFactory {
     public DataSource dataSource() {
         Map<String, String> env = System.getenv();
         String dbUrl = env.get("DB_ACCESS_URL");
+        String dbName = env.get("DB_NAME");
         String dbUserName = env.get("DB_USERNAME");
         String dbUserPassword = env.get("DB_PASSWORD");
 
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
         dataSource.setDriverClass(org.postgresql.Driver.class);
-        dataSource.setUrl(dbUrl);
+        dataSource.setUrl(dbUrl + "/" + dbName);
         dataSource.setUsername(dbUserName);
         dataSource.setPassword(dbUserPassword);
 
