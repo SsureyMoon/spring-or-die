@@ -59,4 +59,23 @@ public class UserDao {
         ps.close();
         connection.close();
     }
+
+    public void deleteAll() throws SQLException {
+        Connection connection = dataSource.getConnection();
+        PreparedStatement ps = connection.prepareStatement(
+                "delete from users");
+        ps.executeUpdate();
+        ps.close();
+        connection.close();
+    }
+
+    public int getCount() throws SQLException {
+        Connection connection = dataSource.getConnection();
+        PreparedStatement ps = connection.prepareStatement(
+                "select count(*) as count from users");
+
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        return rs.getInt("count");
+    }
 }
