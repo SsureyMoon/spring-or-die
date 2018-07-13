@@ -1,9 +1,6 @@
 package com.capricornoow.spring.daos;
 
 import com.capricornoow.spring.domain.User;
-import com.capricornoow.spring.strategies.AddStatement;
-import com.capricornoow.spring.strategies.DeleteAllStatement;
-import com.capricornoow.spring.strategies.DeleteStatement;
 import com.capricornoow.spring.strategies.StatementStrategy;
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -20,8 +17,15 @@ public class UserDao {
         this.dataSource = dataSource;
     }
 
-    public void add(User user) throws SQLException {
-        StatementStrategy stmt = new AddStatement(user);
+    public void add(final User user) throws SQLException {
+        StatementStrategy stmt = conn -> {
+            PreparedStatement ps = conn.prepareStatement(
+                    "insert into users(id, name, password) values(?,?,?)");
+            ps.setString(1, user.getId());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getPassword());
+            return ps;
+        };
         jdbcContextWithStatementStrategy(stmt);
     }
 
@@ -69,13 +73,17 @@ public class UserDao {
         return user;
     }
 
-    public void delete(String id) throws SQLException {
-        StatementStrategy stmt = new DeleteStatement(id);
+    public void delete(final String id) throws SQLException {
+        StatementStrategy stmt = conn -> {
+            PreparedStatement ps = conn.prepareStatement("delete from users where id = ?");
+            ps.setString(1, id);
+            return ps;
+        };
         jdbcContextWithStatementStrategy(stmt);
     }
 
     public void deleteAll() throws SQLException {
-        StatementStrategy stmt = new DeleteAllStatement();
+        StatementStrategy stmt = conn -> conn.prepareStatement("delete from users");
         jdbcContextWithStatementStrategy(stmt);
     }
 
