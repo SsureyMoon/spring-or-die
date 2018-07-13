@@ -1,6 +1,10 @@
 package com.capricornoow.spring.daos;
 
 import com.capricornoow.spring.domain.User;
+import com.capricornoow.spring.strategies.AddStatement;
+import com.capricornoow.spring.strategies.DeleteAllStatement;
+import com.capricornoow.spring.strategies.DeleteStatement;
+import com.capricornoow.spring.strategies.StatementStrategy;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.sql.DataSource;
@@ -17,31 +21,8 @@ public class UserDao {
     }
 
     public void add(User user) throws SQLException {
-        Connection conn = null;
-        PreparedStatement ps = null;
-
-        try {
-            conn = dataSource.getConnection();
-            ps = conn.prepareStatement(
-                    "insert into users(id, name, password) values(?,?,?)");
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if(ps!= null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {}
-            }
-            if(conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {}
-            }
-        }
+        StatementStrategy stmt = new AddStatement(user);
+        jdbcContextWithStatementStrategy(stmt);
     }
 
     public User get(String id) throws SQLException {
@@ -89,53 +70,13 @@ public class UserDao {
     }
 
     public void delete(String id) throws SQLException {
-        Connection conn = null;
-        PreparedStatement ps = null;
-
-        try {
-            conn = dataSource.getConnection();
-            ps = conn.prepareStatement(
-                    "delete from users where id = ?");
-            ps.setString(1, id);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if(ps!= null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {}
-            }
-            if(conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {}
-            }
-        }
+        StatementStrategy stmt = new DeleteStatement(id);
+        jdbcContextWithStatementStrategy(stmt);
     }
 
     public void deleteAll() throws SQLException {
-        Connection conn = null;
-        PreparedStatement ps =null;
-
-        try {
-            conn = dataSource.getConnection();
-            ps = conn.prepareStatement("delete from users");
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if(ps!= null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {}
-            }
-            if(conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {}
-            }
-        }
+        StatementStrategy stmt = new DeleteAllStatement();
+        jdbcContextWithStatementStrategy(stmt);
     }
 
     public int getCount() throws SQLException {
@@ -158,6 +99,31 @@ public class UserDao {
                     rs.close();
                 } catch (SQLException e) {}
             }
+            if(ps != null){
+                try {
+                    ps.close();
+                } catch (SQLException e) {}
+
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {}
+            }
+        }
+    }
+
+    private void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = dataSource.getConnection();
+            ps = stmt.makePreparedStatement(conn);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
             if(ps != null){
                 try {
                     ps.close();
