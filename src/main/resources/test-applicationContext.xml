@@ -9,11 +9,7 @@
         <property name="username" value="#{systemEnvironment['DB_USERNAME']}" />
         <property name="password" value="#{systemEnvironment['DB_PASSWORD']}" />
     </bean>
-    <bean id="jdbcContext" class="com.capricornoow.spring.contexts.JdbcContext">
-        <property name="dataSource" ref="dataSource" />
-    </bean>
     <bean id="userDao" class="com.capricornoow.spring.daos.UserDao">
         <property name="dataSource" ref="dataSource" />
-        <property name="jdbcContext" ref="jdbcContext" />
     </bean>
 </beans>

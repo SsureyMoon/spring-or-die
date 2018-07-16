@@ -15,7 +15,6 @@ public class CountingDaoFactory {
         UserDao userDao = new UserDao();
         DataSource dataSourceObject = dataSource();
         userDao.setDataSource(dataSourceObject);
-        userDao.setJdbcContext(jdbcContext(dataSourceObject));
         return userDao;
     }
 
@@ -34,13 +33,5 @@ public class CountingDaoFactory {
         dataSource.setPassword(dbUserPassword);
 
         return dataSource;
-    }
-
-    @Bean
-    public JdbcContext jdbcContext(DataSource dataSource) {
-        JdbcContext jdbcContextObject = new JdbcContext();
-        jdbcContextObject.setDataSource(dataSource);
-
-        return jdbcContextObject;
     }
 }
