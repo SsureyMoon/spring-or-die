@@ -1,5 +1,6 @@
 package com.capricornoow.spring.daos;
 
+import com.capricornoow.spring.contexts.JdbcContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -12,7 +13,9 @@ public class CountingDaoFactory {
     @Bean
     public UserDao userDao() {
         UserDao userDao = new UserDao();
-        userDao.setDataSource(dataSource());
+        DataSource dataSourceObject = dataSource();
+        userDao.setDataSource(dataSourceObject);
+        userDao.setJdbcContext(jdbcContext(dataSourceObject));
         return userDao;
     }
 
@@ -31,5 +34,13 @@ public class CountingDaoFactory {
         dataSource.setPassword(dbUserPassword);
 
         return dataSource;
+    }
+
+    @Bean
+    public JdbcContext jdbcContext(DataSource dataSource) {
+        JdbcContext jdbcContextObject = new JdbcContext();
+        jdbcContextObject.setDataSource(dataSource);
+
+        return jdbcContextObject;
     }
 }

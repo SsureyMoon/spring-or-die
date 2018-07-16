@@ -1,5 +1,6 @@
 package com.capricornoow.spring.daos;
 
+import com.capricornoow.spring.contexts.JdbcContext;
 import com.capricornoow.spring.domain.User;
 import com.capricornoow.spring.strategies.StatementStrategy;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -12,9 +13,14 @@ import java.sql.SQLException;
 
 public class UserDao {
     private DataSource dataSource;
+    private JdbcContext jdbcContext;
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    public void setJdbcContext(JdbcContext jdbcContext) {
+        this.jdbcContext = jdbcContext;
     }
 
     public void add(final User user) throws SQLException {
@@ -26,7 +32,7 @@ public class UserDao {
             ps.setString(3, user.getPassword());
             return ps;
         };
-        jdbcContextWithStatementStrategy(stmt);
+        this.jdbcContext.workWithStatementStrategy(stmt);
     }
 
     public User get(String id) throws SQLException {
@@ -79,12 +85,12 @@ public class UserDao {
             ps.setString(1, id);
             return ps;
         };
-        jdbcContextWithStatementStrategy(stmt);
+        this.jdbcContext.workWithStatementStrategy(stmt);
     }
 
     public void deleteAll() throws SQLException {
         StatementStrategy stmt = conn -> conn.prepareStatement("delete from users");
-        jdbcContextWithStatementStrategy(stmt);
+        this.jdbcContext.workWithStatementStrategy(stmt);
     }
 
     public int getCount() throws SQLException {
@@ -107,31 +113,6 @@ public class UserDao {
                     rs.close();
                 } catch (SQLException e) {}
             }
-            if(ps != null){
-                try {
-                    ps.close();
-                } catch (SQLException e) {}
-
-            }
-            if(conn != null){
-                try {
-                    conn.close();
-                } catch (SQLException e) {}
-            }
-        }
-    }
-
-    private void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
-        Connection conn = null;
-        PreparedStatement ps = null;
-
-        try {
-            conn = dataSource.getConnection();
-            ps = stmt.makePreparedStatement(conn);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
             if(ps != null){
                 try {
                     ps.close();
