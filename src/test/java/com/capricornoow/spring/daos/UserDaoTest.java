@@ -90,9 +90,11 @@ public class UserDaoTest {
     @Test
     public void getAll() throws SQLException {
         userDao.deleteAll();
+        List<User> users = userDao.getAll();
+        assertThat(users.size(), is(0));
 
         userDao.add(user1);
-        List<User> users = userDao.getAll();
+        users = userDao.getAll();
         assertThat(users.size(), is(1));
         checkSameUser(user1, users.get(0));
 
