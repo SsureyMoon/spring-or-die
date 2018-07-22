@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/test-applicationContext.xml")
@@ -86,8 +87,37 @@ public class UserDaoTest {
         assertThat(userDao.getCount(), is(0));
     }
 
+    @Test
+    public void getAll() throws SQLException {
+        userDao.deleteAll();
+
+        userDao.add(user1);
+        List<User> users = userDao.getAll();
+        assertThat(users.size(), is(1));
+        checkSameUser(user1, users.get(0));
+
+        userDao.add(user2);
+        users = userDao.getAll();
+        assertThat(users.size(), is(2));
+        checkSameUser(user1, users.get(0));
+        checkSameUser(user2, users.get(1));
+
+        userDao.add(user3);
+        users = userDao.getAll();
+        assertThat(users.size(), is(3));
+        checkSameUser(user1, users.get(0));
+        checkSameUser(user2, users.get(1));
+        checkSameUser(user3, users.get(2));
+    }
+
     @After
     public void tearDown() throws SQLException {
         userDao.deleteAll();
+    }
+
+    private void checkSameUser(User user1, User user2) {
+        assertThat(user1.getId(), is(user2.getId()));
+        assertThat(user1.getName(), is(user2.getName()));
+        assertThat(user1.getPassword(), is(user2.getPassword()));
     }
 }

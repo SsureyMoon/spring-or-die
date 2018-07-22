@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.List;
 
 public class UserDao {
     private JdbcTemplate jdbcTemplate;
@@ -23,6 +24,17 @@ public class UserDao {
 
     public User get(String id) throws SQLException {
         return this.jdbcTemplate.queryForObject("select * from users where id = ?", new Object[]{id}, (rs, rowNum) -> {
+            // 이미 첫번째 row를 가리키고 있어서 rs.next 호출 필요 없다.
+            User user = new User();
+            user.setId(rs.getString("id"));
+            user.setName(rs.getString("name"));
+            user.setPassword(rs.getString("password"));
+            return user;
+        });
+    }
+
+    public List<User> getAll() throws SQLException {
+        return this.jdbcTemplate.query("select * from users order by id", (rs, rowNum) -> {
             // 이미 첫번째 row를 가리키고 있어서 rs.next 호출 필요 없다.
             User user = new User();
             user.setId(rs.getString("id"));
