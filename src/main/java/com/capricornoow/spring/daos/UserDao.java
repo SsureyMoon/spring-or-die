@@ -1,9 +1,8 @@
 package com.capricornoow.spring.daos;
 
-import com.capricornoow.spring.contexts.JdbcContext;
 import com.capricornoow.spring.domain.User;
-import com.capricornoow.spring.strategies.StatementStrategy;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -13,24 +12,19 @@ import java.sql.SQLException;
 
 public class UserDao {
     private DataSource dataSource;
-    private JdbcContext jdbcContext;
+    private JdbcTemplate jdbcTemplate;
 
     public void setDataSource(DataSource dataSource) {
-        this.jdbcContext = new JdbcContext();
-        this.jdbcContext.setDataSource(dataSource);
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.dataSource = dataSource;
     }
 
     public void add(final User user) throws SQLException {
-        StatementStrategy stmt = conn -> {
-            PreparedStatement ps = conn.prepareStatement(
-                    "insert into users(id, name, password) values(?,?,?)");
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
-            return ps;
-        };
-        this.jdbcContext.workWithStatementStrategy(stmt);
+        this.jdbcTemplate.update(
+                "insert into users(id, name, password) values(?,?,?)",
+                user.getId(),
+                user.getName(),
+                user.getPassword());
     }
 
     public User get(String id) throws SQLException {
@@ -38,7 +32,6 @@ public class UserDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         User user = null;
-
         try {
             conn = dataSource.getConnection();
             ps = conn.prepareStatement(
@@ -78,21 +71,11 @@ public class UserDao {
     }
 
     public void delete(final String id) throws SQLException {
-        StatementStrategy stmt = conn -> {
-            PreparedStatement ps = conn.prepareStatement("delete from users where id = ?");
-            ps.setString(1, id);
-            return ps;
-        };
-        this.jdbcContext.workWithStatementStrategy(stmt);
+        this.jdbcTemplate.update("delete from users where id = ?", id);
     }
 
     public void deleteAll() throws SQLException {
-        executeSql("delete from users");
-    }
-
-    private void executeSql(String query) throws SQLException {
-        StatementStrategy stmt = conn -> conn.prepareStatement(query);
-        this.jdbcContext.workWithStatementStrategy(stmt);
+        this.jdbcTemplate.update("delete from users");
     }
 
     public int getCount() throws SQLException {
