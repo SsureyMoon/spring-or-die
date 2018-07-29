@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -53,6 +54,15 @@ public class UserDaoTest {
 
         userDao.deleteAll();
         assertThat(userDao.getCount(), is(0));
+    }
+
+    @Test(expected=DataAccessException.class)
+    public void duplicateKey() {
+        userDao.deleteAll();
+        assertThat(userDao.getCount(), is(0));
+
+        userDao.add(user1);
+        userDao.add(user1);
     }
 
     @Test(expected=EmptyResultDataAccessException.class)
