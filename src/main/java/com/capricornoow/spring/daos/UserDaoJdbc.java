@@ -1,5 +1,6 @@
 package com.capricornoow.spring.daos;
 
+import com.capricornoow.spring.domain.Level;
 import com.capricornoow.spring.domain.User;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -17,6 +18,9 @@ public class UserDaoJdbc implements UserDao {
         user.setId(rs.getString("id"));
         user.setName(rs.getString("name"));
         user.setPassword(rs.getString("password"));
+        user.setLevel(Level.valueOf(rs.getInt("level")));
+        user.setLogin(rs.getInt("login"));
+        user.setRecommend(rs.getInt("recommend"));
         return user;
     };
 
@@ -26,10 +30,14 @@ public class UserDaoJdbc implements UserDao {
 
     public void add(final User user) throws DataAccessException {
         this.jdbcTemplate.update(
-                "insert into users(id, name, password) values(?,?,?)",
+                "insert into users(id, name, password, level, login, recommend) values(?,?,?,?,?,?)",
                 user.getId(),
                 user.getName(),
-                user.getPassword());
+                user.getPassword(),
+                user.getLevel().intValue(),
+                user.getLogin(),
+                user.getRecommend()
+        );
     }
 
     public User get(String id) throws IncorrectResultSizeDataAccessException {

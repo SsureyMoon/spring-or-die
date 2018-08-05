@@ -1,5 +1,6 @@
 package com.capricornoow.spring.daos;
 
+import com.capricornoow.spring.domain.Level;
 import com.capricornoow.spring.domain.User;
 import org.junit.After;
 import org.junit.Before;
@@ -30,9 +31,9 @@ public class UserDaoTest {
 
     @Before
     public void setUp() {
-        user1 = new User("id1", "일이삼", "pass1");
-        user2 = new User("id2", "사오육", "pass2");
-        user3 = new User("id3", "칠팔구", "pass3");
+        user1 = new User("id1", "일이삼", "pass1", Level.BASIC, 1, 0);
+        user2 = new User("id2", "사오육", "pass2", Level.SILVER, 55, 10);
+        user3 = new User("id3", "칠팔구", "pass3", Level.GOLD, 100, 40);
     }
 
     @Test
@@ -45,12 +46,10 @@ public class UserDaoTest {
         assertThat(userDao.getCount(), is(2));
 
         User user1get = userDao.get(user1.getId());
-        assertThat(user1get.getName(), is(user1.getName()));
-        assertThat(user1get.getPassword(), is(user1.getPassword()));
+        checkSameUser(user1get, user1);
 
         User user2get = userDao.get(user2.getId());
-        assertThat(user2get.getName(), is(user2.getName()));
-        assertThat(user2get.getPassword(), is(user2.getPassword()));
+        checkSameUser(user2get, user2);
 
         userDao.deleteAll();
         assertThat(userDao.getCount(), is(0));
@@ -131,5 +130,8 @@ public class UserDaoTest {
         assertThat(user1.getId(), is(user2.getId()));
         assertThat(user1.getName(), is(user2.getName()));
         assertThat(user1.getPassword(), is(user2.getPassword()));
+        assertThat(user1.getLevel(), is(user2.getLevel()));
+        assertThat(user1.getLogin(), is(user2.getLogin()));
+        assertThat(user1.getRecommend(), is(user2.getRecommend()));
     }
 }
