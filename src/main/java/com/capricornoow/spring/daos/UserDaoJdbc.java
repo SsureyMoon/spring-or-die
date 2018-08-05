@@ -62,4 +62,12 @@ public class UserDaoJdbc implements UserDao {
     public int getCount() throws DataAccessException {
         return this.jdbcTemplate.queryForObject("select count(*) as count from users", Integer.class);
     }
+
+    public void update(final User user) throws DataAccessException {
+        jdbcTemplate.update(
+            "update users set name = ?, password = ?, level = ?, login = ?, " +
+                    "recommend = ? where id = ? ",
+            user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(),
+            user.getRecommend(), user.getId());
+    }
 }

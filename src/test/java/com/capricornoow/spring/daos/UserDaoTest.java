@@ -121,6 +121,26 @@ public class UserDaoTest {
         checkSameUser(user3, users.get(2));
     }
 
+    @Test
+    public void update() {
+        userDao.deleteAll();
+        userDao.add(user1);
+        userDao.add(user2);
+
+        user1.setName("백일이삼");
+        user1.setPassword("newpass1");
+        user1.setLevel(Level.GOLD);
+        user1.setLogin(1000);
+        user1.setRecommend(999);
+
+        userDao.update(user1);
+        User user1update = userDao.get(user1.getId());
+        checkSameUser(user1update, user1);
+
+        User user2update = userDao.get(user2.getId());
+        checkSameUser(user2update, user2);
+    }
+
     @After
     public void tearDown() throws SQLException {
         userDao.deleteAll();
